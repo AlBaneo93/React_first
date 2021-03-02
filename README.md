@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+# React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Learned
 
-## Available Scripts
+- ref(reference) : 특정 DOM에 접근하기 위해서 ref를 사용
+- 컴포넌트 동기화, state 끌어올리기
+- debounce와 throttle
+- useEffect, useState
 
-In the project directory, you can run:
+#### useEffect
 
-### `yarn start`
+컴포넌트가 렌더링 될 때 마다 특정 작업을 수행하도록 설정할 수 있는 Hook 클래스형 컴포넌트의 componentDidMount와 componenetDidUpdate를 합친 형태로 보아도 무방
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+##### 마운트 될 때만 실행하고 싶을 때
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+useEffect의 두번째 파라미터로 **비어있는 배열**을 넣어준다.
 
-### `yarn test`
+```javascript
+useEffect(() => {
+    console.log("마운트 될 때만 실행")
+}, [])
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##### 특정 값이 업데이트 될 때만 실행하고 싶을 때
 
-### `yarn build`
+useEffect의 두번째 파라미터로 전달되는 배열에 검사하고 싶은 값을 넣어준다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```javascript
+useEffect(() => {
+    console.log("name 또는 email 값이 변경될 때만 실행")
+}, [name, email])
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+##### 정리 실행
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+effect가 함수를 반환하면 리액트는 그 함수를 정리가 필요한 시점에 실행시킨다.
 
-### `yarn eject`
+```javascript
+useEffect(() => {
+    function handleStatusChange(status) {
+        setIsOnline(status.isonline)
+    }
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+    // effect 이후에 어떻게 정리(clean-up)할지 작성 
+    return function cleanup() {
+        // 정리를 실행하는 코드 작성
+    }
+}, [])
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+정리(clean-up)를 위한 함수는 arrow function 도 가능 하며, 함수는 이름에 제한이 없다.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### ref
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+특정 DOM에 접근하기 위해서 ref를 사용
 
-## Learn More
+- 특정 input에 포커스 주기
+- 스크롤 박스 조작하기
+- Canvas 요소에 그림 그리기
+- element 사이즈 측정
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+##### Component에서 ref 사용
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```javascript
+// input의 DOM을 가리키는 ref(this.inputRef) 설정
+<input ref={(ref) => {
+    this.inputRef = ref
+}}></input>
+```
 
-### Code Splitting
+##### hooks에서 ref 사용
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```javascript
+import React, {useRef, useEffect} from "react";
 
-### Analyzing the Bundle Size
+function App() {
+    const inputRef = useRef(null);
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+    // inputRef가 변경될 때 console.log 실행
+    useEffect(() => {
+        console.log(inputRef)
+    }, [inputRef])
 
-### Making a Progressive Web App
+    return (
+        <div>
+            <input ref={inputRef}/>
+        </div>
+    )
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### State 끌어올리기와 Componenet 동기화
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
